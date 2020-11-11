@@ -1,0 +1,6 @@
+database:
+ username: app_name_user
+ password: yourpassword
+ host: localhost
+ port: 5432
+ databaseName: app_name
