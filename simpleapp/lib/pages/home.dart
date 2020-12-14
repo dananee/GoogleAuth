@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:simpleapp/pages/page.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -36,6 +37,12 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<void> gettoNextPage(String title) async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return PageFirst(title: title);
+    }));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -56,10 +63,7 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          setState(() {
-            counter++;
-          });
-          writeData(counter);
+          gettoNextPage('World');
         },
       ),
     );

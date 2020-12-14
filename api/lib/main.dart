@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:api/model.dart';
 import 'package:flutter/widgets.dart';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,75 +23,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<Model> datafetch;
-  List<Model> list = List<Model>();
-  Future<Model> getData() async {
-    var response =
-        await http.get('https://jsonplaceholder.typicode.com/posts/');
+  Future<Lang> lang;
 
-    if (response.statusCode == 200) {
-      List<dynamic> value = List<dynamic>();
-      value = jsonDecode(response.body);
-      if (value.length > 0) {
-        for (int i = 0; i < value.length; i++) {
-          if (i != null) {
-            Map<String, dynamic> map = value[i];
-            list.add(Model.fromJson(map));
-          }
+  Future<Lang> getData() async {
+    try {
+      http.Response response = await http.get("http://10.0.2.2:8888/heroes");
+      print(response.body[0]);
+      String r;
+      if (response.statusCode == 200) {
+        var body = jsonEncode(response.body);
+        for (int i = 0; i < body.length; i++) {
+          r = body[i];
         }
+        return Lang.fromJson(jsonDecode(r));
       }
-    } else {
-      throw Exception('Failed To load album');
+    } catch (e) {
+      print(e);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    datafetch = getData();
+    lang = getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber[50],
-      appBar: AppBar(
-        title: Text('Api Get Data'),
-      ),
-      body: ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (BuildContext context, int index) {
-          if (list.isNotEmpty) {
-            return Card(
-              child: Column(
-                children: [
-                  Text(
-                    list[index].title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w400),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      list[index].body,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Text('Error');
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
+        backgroundColor: Colors.amber[50],
+        appBar: AppBar(
+          title: Text('Api Get Data'),
+        ),
+        body: Center(
+          child: FutureBuilder<Lang>(
+            future: lang,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data.name[0]);
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+          ),
+        ));
   }
 }

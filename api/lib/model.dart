@@ -1,17 +1,21 @@
-class Model {
-  final int id;
-  final int user;
-  final String title;
-  final String body;
+class Lang {
+  int id;
+  String name;
+  String body;
 
-  Model({this.body, this.id, this.title, this.user});
+  Lang({this.id, this.name, this.body});
 
-  factory Model.fromJson(Map<String, dynamic> json) {
-    return Model(
-      body: json['body'],
-      id: json['id'],
-      title: json['title'],
-      user: json['userId'],
-    );
+  Lang.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    body = json['body'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['body'] = this.body;
+    return data;
   }
 }

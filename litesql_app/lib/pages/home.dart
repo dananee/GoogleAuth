@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   int hours;
   DbHelper dbHelper;
   Model model;
-  Future<List> allcontent;
+  Future allcontent;
 
   @override
   void initState() {
@@ -42,26 +42,22 @@ class _HomeState extends State<Home> {
                 }),
           ],
         ),
-        body: todolist());
-  }
-
-  Widget todolist() {
-    return FutureBuilder(
-        initialData: allcontent,
-        future: allcontent,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            return ListView.builder(
-                key: UniqueKey(),
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, int index) {
-                  Model model = Model.fromMap(snapshot.data[index]);
-                  return contents(model);
-                });
-          }
-        });
+        body: FutureBuilder(
+           
+            future: allcontent,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return ListView.builder(
+                    key: UniqueKey(),
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, int index) {
+                      Model model = Model.fromMap(snapshot.data[index]);
+                      return contents(model);
+                    });
+              }
+            }));
   }
 
   Widget contents(model) {
